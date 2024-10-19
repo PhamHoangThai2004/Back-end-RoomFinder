@@ -7,9 +7,9 @@ require 'vendor/autoload.php'; // Đường dẫn tương đối đến file aut
 
 use Firebase\JWT\JWT;
 
-if($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $username = $_GET['username'];
-    $password = $_GET['password'];
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
     $query = "SELECT * FROM account WHERE Username = '$username' AND Password = '$password'";
 
@@ -28,14 +28,14 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         echo json_encode([
             "status" => true,
-            "message" => "Login success",
+            "message" => "Đăng nhập thành công",
             "token" => $jwt
         ]);
     }
     else {
         echo json_encode([
             "status" => false,
-            "message" => "Invalid username or password"       
+            "message" => "Tên tài khoản hoặc mật khẩu không chính xác"
         ]);
     }
         
