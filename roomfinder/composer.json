@@ -1,0 +1,19 @@
+{
+    "name": "pht/roomfinder",
+    "description": "A back-end project about find room, house,...",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Pht\\Roomfinder\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Pham Hoang Thai",
+            "email": "phammindo2004@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
