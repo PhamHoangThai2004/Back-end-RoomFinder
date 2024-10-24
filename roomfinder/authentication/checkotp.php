@@ -1,22 +1,18 @@
 <?php
 
-// Login by email and password
-
-require_once '../vendor/autoload.php'; 
-require_once '../config.php'; 
+require_once '../vendor/autoload.php';
+require_once '../config.php';
 
 use Pht\Roomfinder\Authentication;
 
 header('Content-Type: application/json');
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $email    = $data['email'];
-    $password = $data['password'];
+    $email = $_POST['email'];
+    $otp   = $_POST['otp'];
 
     $auth = new Authentication($connect);
-
-    echo $auth->login($email, $password);
+    echo $auth->checkOTP($email, $otp);
 
 }
 else {

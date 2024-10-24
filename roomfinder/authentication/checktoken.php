@@ -1,22 +1,19 @@
 <?php
 
-// Login by email and password
+// Check code token
 
-require_once '../vendor/autoload.php'; 
-require_once '../config.php'; 
+require_once '../vendor/autoload.php';
+require_once '../config.php';
 
 use Pht\Roomfinder\Authentication;
 
 header('Content-Type: application/json');
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $email    = $data['email'];
-    $password = $data['password'];
+    $token = $_POST['token'];
 
     $auth = new Authentication($connect);
-
-    echo $auth->login($email, $password);
+    echo $auth->checkToken($token);
 
 }
 else {
