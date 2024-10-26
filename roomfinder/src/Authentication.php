@@ -87,6 +87,7 @@ class Authentication {
         $query->execute([$email]);
         $row = $query->rowCount();
         if($row == 0) {
+            $this->checkTemporary($email);
             $otp = rand(100000, 999999);
             $query = $this->connect->prepare("INSERT INTO temporary(Email, Password, RoleID, OTP) VALUES (?, ?, ?, ?)");
             $query->execute([$email, $password, $roleID, $otp]);
@@ -114,15 +115,69 @@ class Authentication {
             $query = $this->connect->prepare("INSERT INTO user(Email, Password, RoleID) VALUES (?, ?, ?)");
             $query->execute([$user['Email'], $user['Password'], $user['RoleID']]);
 
-            return json_encode([
-                'status' => true,
-                'message' => 'Xác nhận email thành công'
-            ]);
+            return $this->login($user['Email'], $user['Password']);
         }
         else {
             return json_encode([
                 'status' => false,
                 'message' => 'Mã OTP không chính xác'
+            ]);
+        }
+    }
+
+    public function forgotPassword($email) {
+        $query = $this->connect->prepare("SELECT * FROM user WHERE Email = ?");
+        $query->execute([$email]);
+        $row = $query->rowCount();
+
+        if ($row == 0) {
+            return json_encode([
+                'status' => false,
+                'message' => 'Email không tồn tại'
+            ]);
+        }
+        else {
+            $otp = rand(100000, 999999);
+            $queryUpdate = $this->connect->prepare("UPDATE user SET OTP = ? WHERE Email = ?");
+            $queryUpdate->execute([$otp, $email]);
+
+            return $this->sendEmail($email, $otp);
+        }
+    }
+
+    public function confirmEmail($email, $otp) {
+        $query = $this->connect->prepare("SELECT * FROM user WHERE Email = ? AND OTP = ?");
+        $query->execute([$email, $otp]);
+        $row = $query->rowCount();
+
+        if($row == 0) {
+            return json_encode([
+                "status" => false,
+                "message" => "Mã OTP không chính xác"
+            ]);
+        }
+        else {
+            return json_encode([
+                "status" => true,
+                "message" => "Mã OTP chính xác"
+            ]);
+        }
+    }
+
+    public function createPassword($email, $newPassword) {
+        $query = $this->connect->prepare("UPDATE user SET Password = ?, OTP = ? WHERE Email = ?");
+        $query->execute([$newPassword, null, $email]);
+
+        if($query->rowCount() > 0) {
+            return json_encode([
+                "status" => true,
+                "message" => "Tạo mật khẩu thành công"
+            ]);
+        }
+        else {
+            return json_encode([
+                "status" => false,
+                "message" => "Có lỗi xảy ra"
             ]);
         }
     }
@@ -177,6 +232,17 @@ class Authentication {
                 "status" => false,
                 "message" => "Gửi mã OTP thất bại"
             ]);
+        }
+    }
+
+    private function checkTemporary($email) {
+        $query = $this->connect->prepare("SELECT * FROM temporary WHERE Email = ?");
+        $query->execute([$email]);
+        $row = $query->rowCount();
+
+        if($row != 0) {
+            $queryDel = $this->connect->prepare("DELETE FROM temporary WHERE Email = ?");
+            $queryDel->execute([$email]);
         }
     }
 
