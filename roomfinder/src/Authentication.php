@@ -2,7 +2,7 @@
 
 namespace Pht\Roomfinder;
 
-require_once '../vendor/autoload.php'; 
+require_once '../vendor/autoload.php';
 require_once '../phpmailer/Exception.php';
 require_once '../phpmailer/PHPMailer.php';
 require_once '../phpmailer/SMTP.php';
@@ -14,7 +14,6 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 class Authentication {
-
     private $connect;
     private $key = 'login_account_pht';
 
@@ -40,11 +39,15 @@ class Authentication {
                 $payload = [
                     'iat' => time(),
                     'exp' => time() + (60 * 60),
-                    'userID' => $user['UserID'],
-                    'email' => $user['Email'],
-                    'roleName' => $roleName,
-                    'name' => $user['Name'],
-                    'phoneNumber' => $user['PhoneNumber']
+                    'user' => [
+                        'userID' => $user['UserID'],
+                        'role' => [
+                            'roleName' => $roleName
+                        ],
+                        'email' => $user['Email'],
+                        'name' => $user['Name'],
+                        'phoneNumber' => $user['PhoneNumber']
+                    ]
                 ];
 
                 $jwt = JWT::encode($payload, $this->key, 'HS256');
@@ -55,7 +58,7 @@ class Authentication {
                     'token' => $jwt
                 ]);
             }
-           
+
         }
         else {
             return json_encode([
@@ -82,15 +85,16 @@ class Authentication {
         }
     }
 
-    public function register($email, $password, $roleID) {
+    public function register($email, $password, $roleName, $name, $phoneNumber) {
         $query = $this->connect->prepare("SELECT * FROM user WHERE Email = ?");
         $query->execute([$email]);
         $row = $query->rowCount();
         if($row == 0) {
             $this->checkTemporary($email);
             $otp = rand(100000, 999999);
-            $query = $this->connect->prepare("INSERT INTO temporary(Email, Password, RoleID, OTP) VALUES (?, ?, ?, ?)");
-            $query->execute([$email, $password, $roleID, $otp]);
+            $roleID = $this->getRoleByName($roleName);
+            $query = $this->connect->prepare("INSERT INTO temporary(Email, Password, RoleID, Name, PhoneNumber, OTP) VALUES (?, ?, ?, ?, ?, ?)");
+            $query->execute([$email, $password, $roleID, $name, $phoneNumber, $otp]);
 
             return $this->sendEmail($email, $otp);
 
@@ -109,11 +113,11 @@ class Authentication {
         $row = $query->rowCount();
         if($row != 0) {
             $user = $query->fetch();
-            $query = $this->connect->prepare("DELETE FROM temporary WHERE Email = ?");
-            $query->execute([$email]);
+            $queryDel = $this->connect->prepare("DELETE FROM temporary WHERE Email = ?");
+            $queryDel->execute([$email]);
 
-            $query = $this->connect->prepare("INSERT INTO user(Email, Password, RoleID) VALUES (?, ?, ?)");
-            $query->execute([$user['Email'], $user['Password'], $user['RoleID']]);
+            $queryIns = $this->connect->prepare("INSERT INTO user(Email, Password, RoleID, Name, PhoneNumber) VALUES (?, ?, ?, ?, ?)");
+            $queryIns->execute([$user['Email'], $user['Password'], $user['RoleID'], $user['Name'], $user['PhoneNumber']]);
 
             return $this->login($user['Email'], $user['Password']);
         }
@@ -126,7 +130,7 @@ class Authentication {
     }
 
     public function forgotPassword($email) {
-        $query = $this->connect->prepare("SELECT * FROM user WHERE Email = ?");
+        $query = $this->connect->prepare("SELECT UserID FROM user WHERE Email = ?");
         $query->execute([$email]);
         $row = $query->rowCount();
 
@@ -146,7 +150,7 @@ class Authentication {
     }
 
     public function confirmEmail($email, $otp) {
-        $query = $this->connect->prepare("SELECT * FROM user WHERE Email = ? AND OTP = ?");
+        $query = $this->connect->prepare("SELECT UserID FROM user WHERE Email = ? AND OTP = ?");
         $query->execute([$email, $otp]);
         $row = $query->rowCount();
 
@@ -192,6 +196,19 @@ class Authentication {
         } 
         else {
             return 'Not found';
+        }
+    }
+
+    private function getRoleByName($roleName) {
+        $query = $this->connect->prepare("SELECT RoleID FROM role WHERE RoleName = ?");
+        $query->execute([$roleName]);
+
+        $role = $query->fetch();
+        if($role) {
+            return $role['RoleID'];
+        }
+        else {
+            return -1;
         }
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+// Check code token
+
 require_once '../vendor/autoload.php';
 require_once '../config.php';
 
@@ -8,17 +10,10 @@ use Pht\Roomfinder\Authentication;
 header('Content-Type: application/json');
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $role        = $data['role'];
-
-    $email       = $data['email'];
-    $password    = $data['password'];
-    $roleName    = $role['roleName'];
-    $name        = $data['name'];
-    $phoneNumber = $data['phoneNumber'];
+    $token = $_POST['token'];
 
     $auth = new Authentication($connect);
-    echo $auth->register($email, $password, $roleName, $name, $phoneNumber);
+    echo $auth->checkToken($token);
 
 }
 else {
