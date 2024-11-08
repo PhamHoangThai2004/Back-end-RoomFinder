@@ -13,7 +13,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-class Authentication {
+class Test {
     private $connect;
     private $key = 'login_account_pht';
 
@@ -106,6 +106,7 @@ class Authentication {
             $query->execute([$email, $password, $roleID, $name, $phoneNumber, $otp]);
 
             return $this->sendEmail($email, $otp);
+
         }
         else {
             return json_encode([
@@ -201,7 +202,7 @@ class Authentication {
 
         if($role) {
             return $role['RoleName'];
-        } 
+        }
         else {
             return 'Not found';
         }

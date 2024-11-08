@@ -9,11 +9,10 @@ use Pht\Roomfinder\Authentication;
 
 header('Content-Type: application/json');
 
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $token = $_POST['token'];
+if($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $auth = new Authentication($connect);
-    echo $auth->checkToken($token);
+    echo $auth->checkToken(getToken());
 
 }
 else {
@@ -22,5 +21,18 @@ else {
         'message' => 'Phương thức truy cập không chính xác'
     ]);
 }
+
+function getToken() {
+    $headers = getallheaders();
+
+    if (isset($headers['Authorization'])) {
+        $token = str_replace('Bearer ', '', $headers['Authorization']);
+        return $token;
+    }
+    else {
+        return "Không tìm thấy token";
+    }
+}
+
 
 ?>

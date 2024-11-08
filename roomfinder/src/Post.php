@@ -65,9 +65,9 @@ class Post {
                 'price' => $post['Price'],
                 'address' => $post['Address'],
                 'tym' => $post["Tym"],
-                'images' => [
-                    'imagePath' => $image ? $image['ImagePath'] : null
-                ]
+                'images' => $image ? [
+                    ['imagePath' => $image['ImagePath']]
+                ] : []
             ];
             $list_Have_Image[] = $new;
         }
@@ -93,9 +93,9 @@ class Post {
                 'price' => $post['Price'],
                 'address' => $post['Address'],
                 'tym' => $post["Tym"],
-                'images' => [
-                    'imagePath' => $image ? $image['ImagePath'] : null
-                ]
+                'images' => $image ? [
+                    ['imagePath' => $image['ImagePath']]
+                ] : []
             ];
             $list_Have_Image[] = $address_HN;
         }
@@ -121,9 +121,9 @@ class Post {
                 'price' => $post['Price'],
                 'address' => $post['Address'],
                 'tym' => $post["Tym"],
-                'images' => [
-                    'imagePath' => $image ? $image['ImagePath'] : null
-                ]
+                'images' => $image ? [
+                    ['imagePath' => $image['ImagePath']]
+                ] : []
             ];
             $list_Have_Image[] = $address_DN;
         }
@@ -149,9 +149,9 @@ class Post {
                 'price' => $post['Price'],
                 'address' => $post['Address'],
                 'tym' => $post['Tym'],
-                'images' => [
-                    'imagePath' => $image ? $image['ImagePath'] : null
-                ]
+                'images' => $image ? [
+                    ['imagePath' => $image['ImagePath']]
+                ] : []
             ];
             $list_Have_Image[] = $address_HCM;
         }
@@ -177,9 +177,9 @@ class Post {
                 'price' => $post['Price'],
                 'address' => $post['Address'],
                 'tym' => $post['Tym'],
-                'images' => [
-                    'imagePath' => $image ? $image['ImagePath'] : null
-                ]
+                'images' => $image ? [
+                    ['imagePath' => $image['ImagePath']]
+                ] : []
             ];
             $list_Have_Image[] = $most;
         }
