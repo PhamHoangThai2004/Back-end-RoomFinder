@@ -12,7 +12,7 @@ class Post {
         $this->connect = $_connect;
     }
 
-    public function listHome() {
+    public function listGroup() {
         $data = [];
 
         $data[] = [
@@ -43,6 +43,52 @@ class Post {
         return json_encode([
             'status' => true,
             'message' => "Lấy danh sách thành công",
+            'data' => $data
+        ]);
+    }
+
+    public function listSearch($keyword, $numeric) {
+        $sql = "SELECT PostID, Title, Description, Price, Address FROM post WHERE ExpireAt > NOW()";
+        if(isset($numeric)) {
+            $maxPrice = $numeric + 0.5;
+            $minPrice = $numeric - 0.5;
+            $maxAcreage = $numeric + 5;
+            $minAcreage = $numeric - 5;
+
+            $sql .= " AND ((Price BETWEEN $minPrice AND $maxPrice) OR (Acreage BETWEEN $minAcreage AND $maxAcreage))";
+        }
+
+        else {
+            $sql .= " AND (Address LIKE '%$keyword%' OR Title LIKE '%$keyword%' OR Description LIKE '%$keyword%')";
+        }
+
+        $query = $this->connect->prepare($sql);
+        $query->execute();
+        $list = $query->fetchAll();
+
+        $data = [];
+
+        foreach ($list as $post) {
+            $query_Image = $this->connect->prepare("SELECT * FROM images WHERE PostID = ?");
+            $query_Image->execute([$post['PostID']]);
+            $image = $query_Image->fetch();
+
+            $new = [
+                'postID' => $post['PostID'],
+                'title' => $post['Title'],
+                'description' => $post['Description'],
+                'price' => $post['Price'],
+                'address' => $post['Address'],
+                'images' => $image ? [
+                    ['imagePath' => $image['ImagePath']]
+                ] : []
+            ];
+            $data[] = $new;
+        }
+
+        return json_encode([
+            'status' => true,
+            'message' => 'Lấy danh sách tìm kiếm thành công',
             'data' => $data
         ]);
     }
