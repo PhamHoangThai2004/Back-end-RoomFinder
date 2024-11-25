@@ -21,14 +21,17 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
         $keyword = extractText($keySearch);
         // echo $keyword;
 
-        echo $post->listSearch($keyword, $numeric);
+        // echo $post->listSearch($keyword, $numeric);
 
-        // $role = checkToken(getToken());
+        $user = checkToken(getToken());
 
-        // if($role == 'User') {
-        //     echo $post->listSearch($keyword, $numeric);
-        // }
-        // else echo $role;
+        if($user['role']['roleName'] == 'User') {
+            echo $post->listSearch($keyword, $numeric);
+        }
+        else echo json_encode([
+            'status' => false,
+            'mesage' => "Không có quyền truy cập"
+        ]);
     }
 
 }

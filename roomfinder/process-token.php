@@ -26,7 +26,7 @@ function checkToken($token) {
         try {
             $decode = JWT::decode($token, new Key($key, 'HS256'));
 
-            return $decode->user->role->roleName;
+            return json_decode(json_encode($decode->user), true);
         } catch (Exception $e) {
             return  'Mã token không hợp lệ';
         }

@@ -7,6 +7,7 @@ require_once '../phpmailer/Exception.php';
 require_once '../phpmailer/PHPMailer.php';
 require_once '../phpmailer/SMTP.php';
 
+use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -36,21 +37,8 @@ class Authentication {
                 ]);
             }
             else {
-                $payload = [
-                    'iat' => time(),
-                    'exp' => time() + (60 * 60),
-                    'user' => [
-                        'userID' => $user['UserID'],
-                        'role' => [
-                            'roleName' => $roleName
-                        ],
-                        'email' => $user['Email'],
-                        'name' => $user['Name'],
-                        'phoneNumber' => $user['PhoneNumber']
-                    ]
-                ];
 
-                $jwt = JWT::encode($payload, $this->key, 'HS256');
+                $jwt = $this->setToken($user, $roleName);
 
                 return json_encode([
                     'status' => true,
@@ -79,7 +67,15 @@ class Authentication {
                     'message' => 'Mã token hợp lệ',
                     'data' => (array) $decode
                 ]);
-            } catch (Exception $e) {
+            }
+            catch (ExpiredException $e) {
+                http_response_code(401);
+                return json_encode([
+                    'status' => false,
+                    'message' => 'Token hết hạn'
+                ]);
+            }
+            catch (Exception $e) {
                 return json_encode([
                     'status' => false,
                     'message' => 'Mã token không hợp lệ'
@@ -89,7 +85,7 @@ class Authentication {
             http_response_code(401);
             return json_encode([
                 'status' => false,
-                'message' => 'Không thấy token'
+                'message' => 'Có lỗi xảy ra'
             ]);
         }
     }
@@ -194,6 +190,53 @@ class Authentication {
         }
     }
 
+    public function changeInformation($user, $userID, $roleName) {
+        $name        = $user['name'];
+        $phoneNumber = $user['phoneNumber'];
+        $query = $this->connect->prepare("UPDATE user SET Name = ?, PhoneNumber = ? WHERE UserID = ?");
+        $query->execute([$name, $phoneNumber, $userID]);
+
+        if($query->rowCount() > 0) {
+
+            $queryGetUser = $this->connect->prepare("SELECT UserID, Email, Name, PhoneNumber FROM user WHERE UserID = ?");
+            $queryGetUser->execute([$userID]);
+            $user = $queryGetUser->fetch();
+
+            $jwt = $this->setToken($user, $roleName);
+            return json_encode([
+                "status" => true,
+                "message" => "Thay đổi thông tin thành công",
+                "token" => $jwt
+            ]);
+        }
+        else {
+            return json_encode([
+                "status" => false,
+                "message" => "Cập nhập không thành công"
+            ]);
+        }
+    }
+
+    private function setToken($user, $roleName) {
+        $payload = [
+            'iat' => time(),
+            'exp' => time() + (60 * 60),
+            'user' => [
+                'userID' => $user['UserID'],
+                'role' => [
+                    'roleName' => $roleName
+                ],
+                'email' => $user['Email'],
+                'name' => $user['Name'],
+                'phoneNumber' => $user['PhoneNumber']
+            ]
+        ];
+
+        $jwt = JWT::encode($payload, $this->key, 'HS256');
+
+        return $jwt;
+    }
+
     private function getRole($roleID) {
         $query = $this->connect->prepare("SELECT * FROM role WHERE RoleID = ?");
         $query->execute([$roleID]);
@@ -201,9 +244,43 @@ class Authentication {
 
         if($role) {
             return $role['RoleName'];
-        } 
+        }
         else {
             return 'Not found';
+        }
+    }
+
+    public function checkAccount($userID, $oldPassword, $newPassword) {
+        $query = $this->connect->prepare("SELECT UserID FROM user WHERE UserID = ? AND Password = ?");
+        $query->execute([$userID, $oldPassword]);
+        $user = $query->fetch();
+
+        if($user) {
+            return $this->changePassword($userID, $newPassword);
+        }
+        else {
+            return json_encode([
+                'status' => false,
+                'message' => "Mật khẩu không chính xác"
+            ]);
+        }
+    }
+
+    private function changePassword($userID, $newPassword) {
+        $query = $this->connect->prepare("UPDATE user SET Password = ? WHERE UserID = ?");
+        $query->execute([$newPassword, $userID]);
+
+        if($query->rowCount() > 0) {
+            return json_encode([
+                "status" => true,
+                "message" => "Đổi mật khẩu thành công"
+            ]);
+        }
+        else {
+            return json_encode([
+                "status" => false,
+                "message" => "Có lỗi xảy ra"
+            ]);
         }
     }
 
@@ -222,7 +299,7 @@ class Authentication {
 
     private function sendEmail($receiveEmail, $otp) {
         $mail = new PHPMailer(true);
-    
+
         try {
             //Server settings
             $mail->SMTPDebug = SMTP::DEBUG_OFF;                      //Enable verbose debug output
@@ -233,24 +310,22 @@ class Authentication {
             $mail->Password   = 'pquf xqel xlhd qlhd';                               //SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
             $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-    
+
             //Recipients
             $mail->setFrom('phammindo2004@gmail.com', 'Room Finder');
             $mail->addAddress($receiveEmail);     //Add a recipient
-            
-    
+
             //Content
             $mail->isHTML(true);                                  //Set email format to HTML
             $mail->Subject = "OTP Confirmation";
             $mail->Body    = "Mã OTP của bạn là $otp. Mã có thời hạn 5 phút.";
-    
+
             $mail->send();
-            
             return json_encode([
                 "status" => true,
                 "message" => "Gửi mã OTP đến email $receiveEmail"
             ]);
-    
+
         } catch (Exception $e) {
             // echo "Gửi mail thất bại. Mailer Error: {$mail->ErrorInfo}";
             return json_encode([
