@@ -307,7 +307,7 @@ class Authentication {
             $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
             $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
             $mail->Username   = 'thai2k4hongquang@gmail.com';                     //SMTP username
-            $mail->Password   = 'pquf xqel xlhd qlhd';                               //SMTP password
+            $mail->Password   = 'cnoc hsbx owar dfdm';                               //SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
             $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
@@ -327,7 +327,6 @@ class Authentication {
             ]);
 
         } catch (Exception $e) {
-            // echo "Gửi mail thất bại. Mailer Error: {$mail->ErrorInfo}";
             return json_encode([
                 "status" => false,
                 "message" => "Gửi mã OTP thất bại"

@@ -8,22 +8,15 @@ use Pht\Roomfinder\Post;
 
 header('Content-Type: application/json');
 
-if($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $categoryName = $_GET['categoryName'];
-    $area = $_GET['area'];
-    $minPrice = $_GET['minPrice'];
-    $maxPrice = $_GET['maxPrice'];
-    $minAcreage = $_GET['minAcreage'];
-    $maxAcreage = $_GET['maxAcreage'];
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $userId = $_POST['userId'];
 
     $post = new Post($connect);
-    // Đang bị lỗi phân filter
 
     $user = checkToken(getToken());
-        // echo $post->postFilter($categoryName, $area, $minPrice, $maxPrice, $minAcreage, $maxAcreage);
 
     if($user['role']['roleName'] == "User") {
-        echo $post->postFilter($categoryName, $area, $minPrice, $maxPrice, $minAcreage, $maxAcreage);
+        echo $post->userDetail($userId);
     }
     else echo json_encode([
         'status' => false,

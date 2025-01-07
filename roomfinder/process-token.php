@@ -13,7 +13,7 @@ function getToken() {
         return $token;
     }
     else {
-        return "Không tìm thấy";
+        return null;
     }
 }
 

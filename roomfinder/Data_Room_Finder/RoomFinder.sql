@@ -62,11 +62,11 @@ CREATE TABLE Favorite(
     UserID INT NOT NULL,
     PostID INT NOT NULL,
 
-    CONSTRAINT F_pk PRIMARY KEY (UserID, PostID),
+    CONSTRAINT U_pk_P PRIMARY KEY (UserID, PostID),
     CONSTRAINT F_fk_U FOREIGN KEY (UserID)
-        REFERENCES User(UserID),
+        REFERENCES User(UserID) ON DELETE CASCADE,
     CONSTRAINT F_fk_P FOREIGN KEY (PostID)
-        REFERENCES Post(PostID)
+        REFERENCES Post(PostID) ON DELETE CASCADE
 );
 
 -- Tạo bảng Images (Lưu trữ ảnh phòng trọ)
@@ -79,3 +79,7 @@ CREATE TABLE Images(
     CONSTRAINT I_fk_P FOREIGN KEY (PostID)
         REFERENCES Post(PostID)
 );
+
+-- Câu lệnh update ExpireAt của table Post
+UPDATE Post
+SET ExpireAt = CURRENT_TIMESTAMP + INTERVAL 1 MONTH;

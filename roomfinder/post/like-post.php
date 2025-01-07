@@ -9,21 +9,15 @@ use Pht\Roomfinder\Post;
 header('Content-Type: application/json');
 
 if($_SERVER['REQUEST_METHOD'] == 'GET') {
-    $categoryName = $_GET['categoryName'];
-    $area = $_GET['area'];
-    $minPrice = $_GET['minPrice'];
-    $maxPrice = $_GET['maxPrice'];
-    $minAcreage = $_GET['minAcreage'];
-    $maxAcreage = $_GET['maxAcreage'];
+    $postId = $_GET['postId'];
+    $isLiked = filter_var($_GET['isLiked'], FILTER_VALIDATE_BOOLEAN);
 
     $post = new Post($connect);
-    // Đang bị lỗi phân filter
 
     $user = checkToken(getToken());
-        // echo $post->postFilter($categoryName, $area, $minPrice, $maxPrice, $minAcreage, $maxAcreage);
 
     if($user['role']['roleName'] == "User") {
-        echo $post->postFilter($categoryName, $area, $minPrice, $maxPrice, $minAcreage, $maxAcreage);
+        echo $post->likePost($user['userID'], $postId, $isLiked);
     }
     else echo json_encode([
         'status' => false,
