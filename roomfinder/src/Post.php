@@ -2,6 +2,7 @@
 
 namespace Pht\Roomfinder;
 
+use PDO;
 use PDOException;
 
 require_once '../vendor/autoload.php';
@@ -12,6 +13,57 @@ class Post {
     public function __construct($_connect)
     {
         $this->connect = $_connect;
+    }
+
+    public function listPosts($userId) {
+        $sql = "SELECT PostID, Title, Acreage, Price, Area, CreatedAt FROM post
+                WHERE UserID = ?
+                ORDER By CreatedAt DESC";
+        $query = $this->connect->prepare($sql);
+
+        try {
+            $query->execute([$userId]);
+            $rawData = $query->fetchAll();
+
+            $data = $this->getImage($rawData);
+
+            return json_encode([
+                'status' => true,
+                'message' => 'Lấy danh sách bài đăng của user thành công',
+                'data' => $data
+            ]);
+        } catch (PDOException $e) {
+            return json_encode([
+                'status' => false,
+                'message' => 'Lỗi SQL'
+            ]);
+        }
+    }
+
+    public function favoritePost($userId) {
+        $sql = "SELECT post.PostID, Title, Acreage, Price, Area, CreatedAt FROM post
+                JOIN favorite ON post.PostID = favorite.PostID
+                WHERE favorite.UserID = ?
+                ORDER By CreatedAt DESC";
+        $query = $this->connect->prepare($sql);
+
+        try {
+            $query->execute([$userId]);
+            $rawData = $query->fetchAll();
+
+            $data = $this->getImage($rawData);
+
+            return json_encode([
+                'status' => true,
+                'message' => 'Lấy danh sách bài đăng yêu thích thành công',
+                'data' => $data
+            ]);
+        } catch (PDOException $e) {
+            return json_encode([
+                'status' => false,
+                'message' => 'Lỗi SQL'
+            ]);
+        }
     }
 
     public function likePost($userId, $postId, $isLiked) {
