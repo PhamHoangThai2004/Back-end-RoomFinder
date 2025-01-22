@@ -193,12 +193,13 @@ class Authentication {
     public function changeInformation($user, $userID, $roleName) {
         $name        = $user['name'];
         $phoneNumber = $user['phoneNumber'];
-        $query = $this->connect->prepare("UPDATE user SET Name = ?, PhoneNumber = ? WHERE UserID = ?");
-        $query->execute([$name, $phoneNumber, $userID]);
+        $address = $user['address'];
+        $query = $this->connect->prepare("UPDATE user SET Name = ?, PhoneNumber = ?, Address = ? WHERE UserID = ?");
+        $query->execute([$name, $phoneNumber, $address, $userID]);
 
         if($query->rowCount() > 0) {
 
-            $queryGetUser = $this->connect->prepare("SELECT UserID, Email, Name, PhoneNumber FROM user WHERE UserID = ?");
+            $queryGetUser = $this->connect->prepare("SELECT UserID, Email, Name, PhoneNumber, Address, Avatar FROM user WHERE UserID = ?");
             $queryGetUser->execute([$userID]);
             $user = $queryGetUser->fetch();
 
@@ -222,13 +223,16 @@ class Authentication {
             'iat' => time(),
             'exp' => time() + (60 * 60),
             'user' => [
-                'userID' => $user['UserID'],
+                'userId' => $user['UserID'],
                 'role' => [
                     'roleName' => $roleName
                 ],
                 'email' => $user['Email'],
                 'name' => $user['Name'],
-                'phoneNumber' => $user['PhoneNumber']
+                'phoneNumber' => $user['PhoneNumber'],
+                'address' => $user['Address'],
+                'avatar' => $user['Avatar']
+
             ]
         ];
 

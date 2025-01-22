@@ -15,6 +15,66 @@ class Post {
         $this->connect = $_connect;
     }
 
+    public function newPost($post, $userId) {
+        $category = new Category($this->connect);
+        $categoryId = $category->getCategoryById($post['category']['categoryName']);
+
+        $this->connect->beginTransaction();
+
+        $newLocation = $post['location'];
+        $location = new Location($this->connect);
+        $locationId = $location->newLocation($newLocation);
+
+        if ($locationId > 0 && $categoryId > 0) {
+            $bonus = "";
+            if ($post['bonus'] == "") {
+                $bonus = null;
+            } else {
+                $bonus = $post['bonus'];
+            }
+            $sql = "INSERT INTO Post (UserID, CategoryID, LocationID, Title, Description, Price, Acreage, Area, Bonus)
+                    VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            $query = $this->connect->prepare($sql);
+            try {
+                $result = $query->execute([$userId, $categoryId, $locationId, $post['title'], $post['description'], $post['price'], $post['acreage'], $post['area'], $bonus]);
+                if ($result) {
+                    $postId = $this->connect->lastInsertId();
+                    $newImages = $post['images'];
+                    $images = new Images($this->connect);
+                    $resultImages = $images->uploadImages($newImages, $postId);
+
+                    if ($resultImages == 1) {
+                        $this->connect->commit();
+                        return json_encode([
+                            'status' => true,
+                            'message' => 'Tạo bài đăng mới thành công'
+                        ]);
+                    } else {
+                        $this->connect->rollBack();
+                        return json_encode([
+                            'status' => false,
+                            'message' => 'Upload ảnh thất bại'
+                        ]);
+                    }
+
+                } else {
+                    $this->connect->rollBack();
+                    return json_encode([
+                        'status' => false,
+                        'message' => 'Tạo bài đăng thất bại'
+                    ]);
+                }
+            } catch (PDOException $e) {
+                $this->connect->rollBack();
+                return json_encode([
+                    'status' => false,
+                    'message' => 'Có lỗi SQL: ' . $e->getMessage()
+                ]);
+            }
+        }
+
+    }
+
     public function listPosts($userId) {
         $sql = "SELECT PostID, Title, Acreage, Price, Area, CreatedAt FROM post
                 WHERE UserID = ?
@@ -460,7 +520,7 @@ class Post {
     }
 
     private function getAreaHCMPost() {
-        $query = $this->connect->prepare("SELECT PostID, Title, Price, Area FROM post WHERE ExpireAt > NOW() AND Area = 'TP Hồ Chí Minh' LIMIT 10");
+        $query = $this->connect->prepare("SELECT PostID, Title, Price, Area FROM post WHERE ExpireAt > NOW() AND Area = 'TP. Hồ Chí Minh' LIMIT 10");
         $query->execute();
         $list = $query->fetchAll();
 

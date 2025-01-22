@@ -15,7 +15,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
     $user = checkToken(getToken());
 
     if($user['role']['roleName'] == "User") {
-        echo $post->listPosts($user['userID']);
+        echo $post->listPosts($user['userId']);
     }
     else echo json_encode([
         'status' => false,

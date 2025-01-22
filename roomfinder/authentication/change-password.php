@@ -19,7 +19,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $user = checkToken(getToken());
 
     if($user['role']['roleName'] == "User" || $user['role']['roleName'] == "Admin") {
-        echo $auth->checkAccount($user['userID'], $oldPassword, $newPassword);
+        echo $auth->checkAccount($user['userId'], $oldPassword, $newPassword);
     }
     else echo json_encode([
         'status' => false,

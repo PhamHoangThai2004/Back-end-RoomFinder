@@ -10,8 +10,9 @@ CREATE TABLE User(
     RoleID INT NOT NULL,
     Email VARCHAR(255) UNIQUE NOT NULL,
     Password VARCHAR(255) NOT NULL,
-    Name VARCHAR(40),
-    PhoneNumber CHAR(10),
+    Name VARCHAR(40) NOT NULL,
+    PhoneNumber CHAR(10) NOT NUL,
+    Avatar VARCHAR(30),
     CreatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     OTP CHAR(6),
 
@@ -28,7 +29,7 @@ CREATE TABLE Category(
 -- Tạo bảng Location
 CREATE TABLE Location(
     LocationID INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    Description VARCHAR(255) NOT NULL,
+    Address VARCHAR(255) NOT NULL,
     Longitude FLOAT NOT NULL,
     Latitude FLOAT NOT NULL
 );
@@ -43,14 +44,13 @@ CREATE TABLE Post(
     Description TEXT,
     Price FLOAT NOT NULL,
     Acreage FLOAT NOT NULL,
-    Address VARCHAR(100) NOT NULL,
-    Tym INT NOT NULL  DEFAULT 0
+    Area VARCHAR(100) NOT NULL,
     Bonus VARCHAR(255),
     CreatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     ExpireAt TIMESTAMP NOT NULL DEFAULT (CURRENT_TIMESTAMP + INTERVAL 30 DAY),
 
     CONSTRAINT P_fk_U FOREIGN KEY (UserID)
-        REFERENCES User(UserID),
+        REFERENCES User(UserID) ON DELETE CASCADE,
     CONSTRAINT C_fk_U FOREIGN KEY (CategoryID)
         REFERENCES Category(CategoryID),
     CONSTRAINT L_fk_P FOREIGN KEY (LocationID)
@@ -77,7 +77,18 @@ CREATE TABLE Images(
     PublicID VARCHAR(100) NOT NULL,
 
     CONSTRAINT I_fk_P FOREIGN KEY (PostID)
-        REFERENCES Post(PostID)
+        REFERENCES Post(PostID) ON DELETE CASCADE
+);
+
+-- Tạo bảng Temporary
+CREATE TABLE Temporary(
+    UserID INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    Email VARCHAR(255) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    RoleID INT NOT NULL,
+    Name VARCHAR(40) NOT NULL,
+    PhoneNumber CHAR(10) NOT NULL,
+    OTP CHAR(6) NOT NULL
 );
 
 -- Câu lệnh update ExpireAt của table Post

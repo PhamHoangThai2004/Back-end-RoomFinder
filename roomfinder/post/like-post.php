@@ -17,7 +17,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
     $user = checkToken(getToken());
 
     if($user['role']['roleName'] == "User") {
-        echo $post->likePost($user['userID'], $postId, $isLiked);
+        echo $post->likePost($user['userId'], $postId, $isLiked);
     }
     else echo json_encode([
         'status' => false,

@@ -2,6 +2,8 @@
 
 namespace Pht\Roomfinder;
 
+use PDOException;
+
 require_once '../vendor/autoload.php';
 
 class Category {
@@ -35,6 +37,25 @@ class Category {
                 'status' => false,
                 'message' => "Có lỗi xảy ra"
             ]);
+        }
+    }
+
+    public function getCategoryById($categoryName) {
+        $sql = "SELECT CategoryID FROM category WHERE CategoryName = ?";
+        $query = $this->connect->prepare($sql);
+
+        try {
+            $query->execute([$categoryName]);
+            $data = $query->fetch();
+
+            if ($data) {
+                return $data['CategoryID'];
+            } else {
+                return -1;
+            }
+
+        } catch (PDOException $e) {
+            return -2;
         }
     }
 }

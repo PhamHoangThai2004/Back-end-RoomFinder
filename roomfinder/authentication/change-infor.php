@@ -18,7 +18,7 @@ if($_SERVER['REQUEST_METHOD'] == 'PUT') {
     $user = checkToken(getToken());
 
     if($user['role']['roleName'] == "User" || $user['role']['roleName'] == "Admin") {
-        echo $auth->changeInformation($data, $user['userID'], $user['role']['roleName']);
+        echo $auth->changeInformation($data, $user['userId'], $user['role']['roleName']);
     }
     else echo json_encode([
         'status' => false,
