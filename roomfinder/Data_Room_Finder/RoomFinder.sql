@@ -11,8 +11,9 @@ CREATE TABLE User(
     Email VARCHAR(255) UNIQUE NOT NULL,
     Password VARCHAR(255) NOT NULL,
     Name VARCHAR(40) NOT NULL,
-    PhoneNumber CHAR(10) NOT NUL,
+    PhoneNumber CHAR(10) NOT NULL,
     Avatar VARCHAR(30),
+    Address VARCHAR(255) NOT NULL DEFAULT 'Chưa có địa chỉ',
     CreatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     OTP CHAR(6),
 
@@ -52,9 +53,9 @@ CREATE TABLE Post(
     CONSTRAINT P_fk_U FOREIGN KEY (UserID)
         REFERENCES User(UserID) ON DELETE CASCADE,
     CONSTRAINT C_fk_U FOREIGN KEY (CategoryID)
-        REFERENCES Category(CategoryID),
+        REFERENCES Category(CategoryID) ON DELETE CASCADE,
     CONSTRAINT L_fk_P FOREIGN KEY (LocationID)
-        REFERENCES Location(LocationID)
+        REFERENCES Location(LocationID) ON DELETE CASCADE
 );
 
 -- Tạo bảng Favorite

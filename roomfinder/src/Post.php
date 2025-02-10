@@ -15,6 +15,80 @@ class Post {
         $this->connect = $_connect;
     }
 
+    public function updatePost($data, $userId) {
+        $category = new Category($this->connect);
+        $categoryId = $category->getCategoryById($data['category']['categoryName']);
+
+        if ($data['user']['userId'] == $userId) {
+            $sql = "UPDATE post 
+                    SET CategoryID = ?, Title = ?, Description = ?, Price = ?, Acreage = ?, Bonus = ?";
+            if ($data['expireAt'] == 3) {
+                $sql .= ", ExpireAt = CURRENT_TIMESTAMP + INTERVAL 3 DAY";
+            }
+            else if ($data['expireAt'] == 5) {
+                $sql .= ", ExpireAt = CURRENT_TIMESTAMP + INTERVAL 5 DAY";
+            }
+            else if ($data['expireAt'] == 7) {
+                $sql .= ", ExpireAt = CURRENT_TIMESTAMP + INTERVAL 7 DAY";
+            }
+            $sql .= " WHERE PostID = ?";
+            $params = [$categoryId, $data['title'], $data['description'], $data['price'], $data['acreage'], $data['bonus'], $data['postID']];
+
+            $query = $this->connect->prepare($sql);
+            if ($query->execute($params)) {
+                return json_encode([
+                    'status' => true,
+                    'message' => 'Cập nhật bài đăng thành công'
+                ]);
+            }
+            else {
+                return json_encode([
+                    'status' => false,
+                    'message' => 'Sửa bài đăng thất bại'
+                ]);
+            }
+        }
+        else {
+            return json_encode([
+                'status' => false,
+                'message' => 'Không có quyền sửa bài đăng'
+            ]);
+        }
+    }
+
+    public function deletePost($postId, $userId) {
+        $sql = "SELECT UserID, LocationID FROM post WHERE PostID = ?";
+        $query = $this->connect->prepare($sql);
+        $query->execute([$postId]);
+        $post = $query->fetch();
+
+        $location = new Location($this->connect);
+        if ($post['UserID'] == $userId) {
+            $this->connect->beginTransaction();
+            $result = $location->deleteLocation($post['LocationID']);
+
+            if ($result == 1) {
+                $this->connect->commit();
+                return json_encode([
+                    'status' => true,
+                    'message' => 'Xóa bài đăng thành công'
+                ]);
+            }
+            else {
+                $this->connect->rollBack();
+                return json_encode([
+                    'status' => false,
+                    'message' => 'Xóa bài đăng thất bại'
+                ]);
+            }
+        } else {
+            return json_encode([
+                'status' => false,
+                'message' => 'Không có quyền xóa bài đăng'
+            ]);
+        }
+    }
+
     public function newPost($post, $userId) {
         $category = new Category($this->connect);
         $categoryId = $category->getCategoryById($post['category']['categoryName']);
@@ -75,10 +149,15 @@ class Post {
 
     }
 
-    public function listPosts($userId) {
+    public function listPosts($userId, $isExpired) {
         $sql = "SELECT PostID, Title, Acreage, Price, Area, CreatedAt FROM post
-                WHERE UserID = ?
+                WHERE UserID = ? AND ExpireAt > NOW()
                 ORDER By CreatedAt DESC";
+        if ($isExpired) {
+            $sql = "SELECT PostID, Title, Acreage, Price, Area, CreatedAt FROM post
+                WHERE UserID = ? AND ExpireAt < NOW()
+                ORDER By CreatedAt DESC";
+        }
         $query = $this->connect->prepare($sql);
 
         try {
@@ -300,13 +379,13 @@ class Post {
                     JOIN user ON post.UserID = user.UserID
                     JOIN category ON post.CategoryID = category.CategoryID
                     JOIN location ON post.LocationID = location.LocationID
-			            WHERE ExpireAt > NOW() AND PostID = ?";
+			            WHERE PostID = ?";
         $query = $this->connect->prepare($sql);
         $query->execute([$postId]);
         $rawData = $query->fetch();
 
         if ($rawData) {
-            $queryImage = $this->connect->prepare("SELECT ImagePath AS imagePath FROM images WHERE PostID = ?");
+            $queryImage = $this->connect->prepare("SELECT ImagePath AS imagePath, PublicID AS publicId FROM images WHERE PostID = ?");
             $queryImage->execute([$postId]);
             $images = $queryImage->fetchAll();
 
@@ -355,7 +434,7 @@ class Post {
         else {
             return json_encode([
                 'status' => false,
-                'message' => "Không tìm thấy hoặc bài đăng đã hết hạn"
+                'message' => "Không tìm thấy bài đăng"
             ]);
         }
     }

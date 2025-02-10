@@ -9,13 +9,14 @@ use Pht\Roomfinder\Post;
 header('Content-Type: application/json');
 
 if($_SERVER['REQUEST_METHOD'] == 'GET') {
+    $isExpired = filter_var($_GET['isExpired'], FILTER_VALIDATE_BOOLEAN);
 
     $post = new Post($connect);
 
     $user = checkToken(getToken());
 
     if($user['role']['roleName'] == "User") {
-        echo $post->listPosts($user['userId']);
+        echo $post->listPosts($user['userId'], $isExpired);
     }
     else echo json_encode([
         'status' => false,

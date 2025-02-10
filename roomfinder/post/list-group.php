@@ -11,16 +11,16 @@ header('Content-Type: application/json');
 if($_SERVER['REQUEST_METHOD'] == 'GET') {
     $post = new Post($connect);
 
-    // $user = checkToken(getToken());
-    echo $post->listGroup();
+    $user = checkToken(getToken());
+    // echo $post->listGroup();
 
-    // if($user['role']['roleName'] == "User") {
-    //     echo $post->listGroup();
-    // }
-    // else echo json_encode([
-    //     'status' => false,
-    //     'mesage' => "Không có quyền truy cập"
-    // ]);
+    if($user['role']['roleName'] == "User") {
+        echo $post->listGroup();
+    }
+    else echo json_encode([
+        'status' => false,
+        'mesage' => "Không có quyền truy cập"
+    ]);
 }
 
 else {

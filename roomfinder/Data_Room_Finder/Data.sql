@@ -106,3 +106,19 @@ VALUES  (11, 1, 1, 'Căn hộ tiện nghi tại Quận Hai Bà Trưng', 'Căn h�
         }
     ]
 }
+-- Dữ liệu test
+{
+    "postID": 36,
+    "user": {
+      "userId": 1
+    },
+    "category": {
+      "categoryName": "Tìm người ở ghép"
+    },
+    "title": "Tôi cũng chúc bạn và gia đình sang năm mới may mắn, mạnh khoẻ, vạn sự như ý, công việc hanh",
+    "description": "Nhà gần sân vận động Mỹ Đình', 'Nhà gần sân vận động Mỹ Đình, Quận Nam Từ Liêm, Hà Nội",
+    "price": 12,
+    "acreage": 850,
+    "bonus": "Giảm 1 nửa tiền thuê tháng đầu",
+    "expireAt": "7" -- 0, 3, 5, 7
+}
