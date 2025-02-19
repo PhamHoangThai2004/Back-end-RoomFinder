@@ -58,11 +58,11 @@ VALUES  ('Gần Vincom Center, Quận Hai Bà Trưng, Hà Nội', 105.852, 21.01
 -- Chèn dữ liệu cho bảng Post
 INSERT INTO Post (UserID, CategoryID, LocationID, Title, Description, Price, Acreage, Area, Bonus)
 VALUES  (11, 1, 1, 'Căn hộ tiện nghi tại Quận Hai Bà Trưng', 'Căn hộ gần Vincom Center, Quận Hai Bà Trưng, Hà Nội', 4.3, 80, 'Hà Nội', 'Giảm giá tháng đầu'),
-        (12, 1, 2, 'Căn hộ cao cấp Quận 1', 'Căn hộ cao cấp gần quán cà phê Highlands, Quận 1, TP.HCM', 3, 85, 'TP.HCM', 'Miễn phí dịch vụ 3 tháng'),
-        (11, 1, 3, 'Nhà gần chợ Bến Thành', 'Nhà phố gần khu chợ Bến Thành, Quận 1, TP.HCM', 2.7, 95, 'TP.HCM', 'Giảm giá 10% cho hợp đồng 1 năm'),
-        (13, 2, 4, 'Nhà riêng Quận 7', 'Nhà riêng gần quán cà phê The Coffee House, Quận 7, TP.HCM', 12, 90, 'TP.HCM', NULL),
+        (12, 1, 2, 'Căn hộ cao cấp Quận 1', 'Căn hộ cao cấp gần quán cà phê Highlands, Quận 1, TP.HCM', 3, 85, 'TP. Hồ Chí Minh', 'Miễn phí dịch vụ 3 tháng'),
+        (11, 1, 3, 'Nhà gần chợ Bến Thành', 'Nhà phố gần khu chợ Bến Thành, Quận 1, TP.HCM', 2.7, 95, 'TP. Hồ Chí Minh', 'Giảm giá 10% cho hợp đồng 1 năm'),
+        (13, 2, 4, 'Nhà riêng Quận 7', 'Nhà riêng gần quán cà phê The Coffee House, Quận 7, TP.HCM', 12, 90, 'TP. Hồ Chí Minh', NULL),
         (13, 1, 5, 'Căn hộ ven biển Mỹ Khê', 'Căn hộ gần biển Mỹ Khê, Quận Ngũ Hành Sơn, Đà Nẵng', 6, 120, 'Đà Nẵng', 'Miễn phí dịch vụ'),
-        (12, 2, 6, 'Nhà phố Tân Phú', 'Nhà phố gần trường Đại học Văn Hiến, Quận Tân Phú, TP.HCM', 5.2, 70, 'TP.HCM', 'Tặng 2 tháng tiền nhà'),
+        (12, 2, 6, 'Nhà phố Tân Phú', 'Nhà phố gần trường Đại học Văn Hiến, Quận Tân Phú, TP.HCM', 5.2, 70, 'TP. Hồ Chí Minh', 'Tặng 2 tháng tiền nhà'),
         (11, 1, 7, 'Căn hộ Quận Sơn Trà', 'Căn hộ gần Vincom Plaza, Quận Sơn Trà, Đà Nẵng', 2.8, 75, 'Đà Nẵng', NULL),
         (14, 2, 8, 'Nhà riêng gần sân bay Đà Nẵng', 'Nhà riêng gần sân bay Quốc tế Đà Nẵng, Quận Hải Châu, Đà Nẵng', 3, 105, 'Đà Nẵng', 'Miễn phí 1 tháng thuê'),
         (14, 1, 9, 'Nhà gần sân vận động Mỹ Đình', 'Nhà gần sân vận động Mỹ Đình, Quận Nam Từ Liêm, Hà Nội', 3.3, 85, 'Hà Nội', 'Giảm giá cho hợp đồng dài hạn'),
@@ -71,12 +71,12 @@ VALUES  (11, 1, 1, 'Căn hộ tiện nghi tại Quận Hai Bà Trưng', 'Căn h�
         (15, 2, 12, 'Nhà phố Hải Châu', 'Nhà phố gần công viên Châu Á, Quận Hải Châu, Đà Nẵng', 2, 85, 'Đà Nẵng', 'Tặng 1 tháng tiền thuê'),
         (12, 1, 13, 'Căn hộ cao cấp Hoàn Kiếm', 'Căn hộ cao cấp gần hồ Hoàn Kiếm, Quận Hoàn Kiếm, Hà Nội', 3.3, 90, 'Hà Nội', 'Miễn phí dịch vụ 3 tháng'),
         (13, 1, 14, 'Nhà phố Ba Đình', 'Nhà phố gần quán cà phê AHA, Quận Ba Đình, Hà Nội', 4, 80, 'Hà Nội', 'Giảm giá 5% cho hợp đồng 2 năm'),
-        (14, 2, 15, 'Nhà gần công viên Thống Nhất', 'Nhà riêng gần công viên Thống Nhất, Quận Hai Bà Trưng, Hà Nội', 17000000, 85, 'Hà Nội', NULL),
+        (14, 2, 15, 'Nhà gần công viên Thống Nhất', 'Nhà riêng gần công viên Thống Nhất, Quận Hai Bà Trưng, Hà Nội', 8, 85, 'Hà Nội', NULL),
         (14, 1, 16, 'Nhà phố Đồng Xuân', 'Nhà phố gần chợ Đồng Xuân, Quận Hoàn Kiếm, Hà Nội', 3.7, 100, 'Hà Nội', 'Tặng 2 tháng tiền nhà'),
         (15, 2, 17, 'Nhà ven cầu Rồng', 'Nhà gần cầu Rồng, Quận Hải Châu, Đà Nẵng', 13, 110, 'Đà Nẵng', 'Miễn phí dịch vụ 6 tháng'),
-        (11, 1, 18, 'Nhà phố Quận 3', 'Nhà phố gần quán cà phê Phúc Long, Quận 3, TP.HCM', 6.3, 70, 'TP.HCM', 'Giảm 10% giá thuê'),
-        (13, 2, 19, 'Nhà Tân Bình', 'Nhà gần công viên Hoàng Văn Thụ, Quận Tân Bình, TP.HCM', 3, 80, 'TP.HCM', NULL),
-        (12, 1, 20, 'Căn hộ Bình Thạnh', 'Căn hộ gần cầu Sài Gòn, Quận Bình Thạnh, TP.HCM', 3.5, 90, 'TP.HCM', 'Tặng 1 năm phí quản lý');
+        (11, 1, 18, 'Nhà phố Quận 3', 'Nhà phố gần quán cà phê Phúc Long, Quận 3, TP.HCM', 6.3, 70, 'TP. Hồ Chí Minh', 'Giảm 10% giá thuê'),
+        (13, 2, 19, 'Nhà Tân Bình', 'Nhà gần công viên Hoàng Văn Thụ, Quận Tân Bình, TP.HCM', 3, 80, 'TP. Hồ Chí Minh', NULL),
+        (12, 1, 20, 'Căn hộ Bình Thạnh', 'Căn hộ gần cầu Sài Gòn, Quận Bình Thạnh, TP.HCM', 3.5, 90, 'TP. Hồ Chí Minh', 'Tặng 1 năm phí quản lý');
 
 
 -- Dữ liệu test

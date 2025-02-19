@@ -23,6 +23,23 @@ class Authentication {
         $this->connect = $_connect;
     }
 
+    public function changeAvatar($userId, $avatar) {
+        $sql = "UPDATE user SET Avatar = ? WHERE UserID = ?";
+        $query = $this->connect->prepare($sql);
+
+        if ($query->execute([$avatar, $userId])) {
+            return json_encode([
+                'status' => true,
+                'message' => 'Thay đổi ảnh đại diện thành công'
+            ]);
+        } else {
+            return json_encode([
+                'status' => false,
+                'message' => 'Thay đổi ảnh đại diện thất bại'
+            ]);
+        }
+    }
+
     public function login($email, $password) {
         $query = $this->connect->prepare("SELECT *FROM user WHERE Email = ? AND Password = ?");
         $query->execute([$email, $password]);
@@ -231,7 +248,8 @@ class Authentication {
                 'name' => $user['Name'],
                 'phoneNumber' => $user['PhoneNumber'],
                 'address' => $user['Address'],
-                'avatar' => $user['Avatar']
+                'avatar' => $user['Avatar'],
+                ""
 
             ]
         ];

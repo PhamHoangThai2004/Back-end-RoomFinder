@@ -45,7 +45,6 @@ else if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
         'status' => false,
         'message' => "Không có quyền truy cập"
     ]);
-
 }
 
 else if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
