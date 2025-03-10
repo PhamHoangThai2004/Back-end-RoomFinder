@@ -13,11 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     // echo $category->listCategory();
 
-    $user = checkToken(getToken());
+    // $user = checkToken(getToken());
 
-    if ($user['role']['roleName'] == "User") {
-        echo $category->listCategory();
-    }
+    echo $category->listCategory();
+
+    // if ($user['role']['roleName'] == "User") {
+    //     echo $category->listCategory();
+    // }
 }
 
 else {

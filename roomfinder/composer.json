@@ -16,6 +16,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "firebase/php-jwt": "^6.10"
+        "firebase/php-jwt": "^6.10",
+        "kreait/firebase-php": "^5.26"
     }
 }

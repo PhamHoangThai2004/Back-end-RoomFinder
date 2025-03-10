@@ -123,7 +123,7 @@ class Authentication {
         else {
             return json_encode([
                 'status' => false,
-                'message' => 'Tên email đã được sử dụng'
+                'message' => 'Tên email này đã được sử dụng'
             ]);
         }
     }
