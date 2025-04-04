@@ -14,8 +14,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $auth = new Authentication($connect);
 
-    // echo $auth->checkAccount($userID, $oldPassword, $newPassword);
-
     $user = checkToken(getToken());
 
     if($user['role']['roleName'] == "User" || $user['role']['roleName'] == "Admin") {

@@ -13,8 +13,6 @@ if($_SERVER['REQUEST_METHOD'] == 'PUT') {
 
     $auth = new Authentication($connect);
 
-    // echo $auth->changeInformation($userID, $name, $phoneNumber);
-
     $user = checkToken(getToken());
 
     if($user['role']['roleName'] == "User" || $user['role']['roleName'] == "Admin") {

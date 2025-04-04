@@ -17,10 +17,8 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
     $maxAcreage = $_GET['maxAcreage'];
 
     $post = new Post($connect);
-    // Đang bị lỗi phân filter
 
     $user = checkToken(getToken());
-        // echo $post->postFilter($categoryName, $area, $minPrice, $maxPrice, $minAcreage, $maxAcreage);
 
     if($user['role']['roleName'] == "User") {
         echo $post->postFilter($categoryName, $area, $minPrice, $maxPrice, $minAcreage, $maxAcreage);

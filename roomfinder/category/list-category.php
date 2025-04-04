@@ -11,15 +11,11 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $category = new Category($connect);
 
-    // echo $category->listCategory();
+    $user = checkToken(getToken());
 
-    // $user = checkToken(getToken());
-
-    echo $category->listCategory();
-
-    // if ($user['role']['roleName'] == "User") {
-    //     echo $category->listCategory();
-    // }
+    if ($user['role']['roleName'] == "User") {
+        echo $category->listCategory();
+    }
 }
 
 else {

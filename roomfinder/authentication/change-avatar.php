@@ -12,7 +12,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $avatar = $_POST["avatar"];
 
     $auth = new Authentication($connect);
-    // echo $auth->changeAvatar($userId, $avatar);
 
     $user = checkToken(getToken());
 

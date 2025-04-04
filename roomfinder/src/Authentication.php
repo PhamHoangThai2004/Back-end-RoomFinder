@@ -328,13 +328,13 @@ class Authentication {
             $mail->isSMTP();                                            //Send using SMTP
             $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
             $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            $mail->Username   = 'thai2k4hongquang@gmail.com';                     //SMTP username
-            $mail->Password   = 'cnoc hsbx owar dfdm';                               //SMTP password
+            $mail->Username   = 'gmailexample@gmail.com';                     //SMTP username
+            $mail->Password   = 'password example';                               //SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
             $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
             //Recipients
-            $mail->setFrom('phammindo2004@gmail.com', 'Room Finder');
+            $mail->setFrom('example@gmail.com', 'Room Finder');
             $mail->addAddress($receiveEmail);     //Add a recipient
 
             //Content

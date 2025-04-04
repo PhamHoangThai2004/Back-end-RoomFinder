@@ -3,25 +3,26 @@ require_once '../vendor/autoload.php';
 
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Messaging\Notification;
 
-// Khởi tạo Firebase
-$factory = (new Factory)->withServiceAccount('D:\xampp\htdocs\roomfinder\firebase-key.json');
-$messaging = $factory->createMessaging();
+function sendNotification($title, $mess, $id) {
 
-// Tạo nội dung thông báo
-$message = CloudMessage::fromArray([
-    'topic' => 'all',
-    'data' => [
-        'title' => 'Bài đăng mới trên Room Finder!',
-        'message' => 'Có một phòng mới vừa được đăng, hãy kiểm tra ngay!',
-        'action' => 'send_notification'
-    ],
-]);
+    // Khởi tạo Firebase
+    $factory = (new Factory)->withServiceAccount('D:\xampp\htdocs\roomfinder\firebase-key.json');
+    $messaging = $factory->createMessaging();
 
-// Gửi thông báo
-$messaging->send($message);
+    // Tạo nội dung thông báo
+    $message = CloudMessage::fromArray([
+        'topic' => 'all',
+        'data' => [
+            'title' => $title,
+            'message' => $mess,
+            'postId'=> $id,
+            'action' => 'send_notification'
+        ],
+    ]);
 
-echo "Thông báo đã gửi thành công!";
+    // Gửi thông báo
+    $messaging->send($message);
+}
 
 ?>

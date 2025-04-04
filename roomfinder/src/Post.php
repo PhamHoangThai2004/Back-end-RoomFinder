@@ -2,10 +2,10 @@
 
 namespace Pht\Roomfinder;
 
-use PDO;
 use PDOException;
 
 require_once '../vendor/autoload.php';
+require_once '../notification/notification.php';
 
 class Post {
     private $connect;
@@ -119,9 +119,14 @@ class Post {
 
                     if ($resultImages == 1) {
                         $this->connect->commit();
+                        $area = $post['area'];
+                        $title = "Bài đăng mới trên Room Finder!";
+                        $mess = "Có một phòng mới vừa được đăng ở khu vực $area, hãy kiểm tra ngay!";
+
+                        sendNotification($title, $mess, $postId);
                         return json_encode([
                             'status' => true,
-                            'message' => 'Tạo bài đăng mới thành công'
+                            'message' => "Tạo bài đăng mới thành công"
                         ]);
                     } else {
                         $this->connect->rollBack();
@@ -339,6 +344,74 @@ class Post {
         return json_encode([
             'status' => true,
             'message' => "Lấy danh sách thành công",
+            'data' => $data
+        ]);
+    }
+
+    public function listRandom() {
+        $sql = "SELECT p.PostID, p.Title, p.Price, p.Acreage, p.Area, p.CreatedAt 
+        FROM post p 
+        JOIN (SELECT PostID FROM post ORDER BY RAND() LIMIT 10) AS random_posts 
+        ON p.PostID = random_posts.PostID";
+
+        $query = $this->connect->prepare($sql);
+        $query->execute();
+        $rawData = $query->fetchAll();
+
+        $data = $this->getImage($rawData);
+
+        return json_encode([
+            'status' => true,
+            'message' => 'Lấy danh sách bài đăng ngẫu nhiên thành công',
+            'data' => $data
+        ]);
+        
+    }
+
+    public function listBonus($area) {
+        $params = [];
+        $sql = "SELECT PostID, Title, Price, Acreage, Area, CreatedAt
+                FROM post
+                WHERE Bonus IS NOT NULL";
+
+        if ($area != 'Toàn quốc') {
+            $sql .= " AND Area = ?";
+            $params[] = $area;
+        }
+        
+        $query = $this->connect->prepare($sql);
+        $query->execute($params);
+        $rawData = $query->fetchAll();
+
+        $data = $this->getImage($rawData);
+
+        return json_encode([
+            'status' => true,
+            'message' => 'Lấy danh sách bài đăng có sale thành công',
+            'data' => $data
+        ]);
+    }
+
+    public function listRoommate($area) {
+        $params = [];
+        $sql = "SELECT PostID, Title, Price, Acreage, Area, CreatedAt
+                FROM post
+                WHERE CategoryID = 5";
+
+        if ($area != 'Toàn quốc') {
+            $sql .= " AND Area = ?";
+            $params[] = $area;
+        }
+        
+        $query = $this->connect->prepare($sql);
+        $query->execute($params);
+        $rawData = $query->fetchAll();
+
+        $data = $this->getImage($rawData);
+
+        return json_encode([
+            'status' => true,
+            'message' => 'Lấy danh sách bài đăng tìm người ở ghép thành công',
             'data' => $data
         ]);
     }

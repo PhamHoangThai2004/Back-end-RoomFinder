@@ -3,6 +3,7 @@
 require_once '../vendor/autoload.php';
 require_once '../config.php';
 require_once '../process-token.php';
+require_once '../notification/notification.php';
 
 use Pht\Roomfinder\Post;
 

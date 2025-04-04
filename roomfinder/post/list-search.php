@@ -16,12 +16,8 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
         $post = new Post($connect);
 
         $numeric = extractNumeric($keySearch);
-        // echo $numeric;
 
         $keyword = extractText($keySearch);
-        // echo $keyword;
-
-        // echo $post->listSearch($keyword, $numeric);
 
         $user = checkToken(getToken());
 
